@@ -65,7 +65,7 @@ const LargeTitle = () => (
     <Link href="/">
       <a
         className={clsx(
-          "text-3xl font-black leading-none text-black no-underline font-display",
+          "text-3xl font-black leading-none text-blue-800 no-underline font-display",
           "sm:text-5xl",
           "dark:text-blue-400"
         )}
@@ -81,7 +81,7 @@ const SmallTitle = () => (
     <Link href="/">
       <a
         className={clsx(
-          "text-2xl font-black text-black no-underline font-display",
+          "text-2xl font-black text-blue-800 no-underline font-display",
           "dark:text-blue-400"
         )}
       >
