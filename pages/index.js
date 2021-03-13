@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 
 import { Layout, Bio, SEO } from "@components/common";
 import { getSortedPosts } from "@utils/posts";
@@ -40,16 +40,16 @@ export default function Home({ posts }) {
       <div>
         {currentPageData}
         <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          breakLabel={'...'}
+          previousLabel="Previous"
+          nextLabel="Next"
+          breakLabel="..."
           pageCount={pageCount}
           onPageChange={handlePageClick}
-          containerClassName={'flex-1 flex justify-between mb-8 mt-4'}
-          previousLinkClassName={currentPage === 0 ? 'disabled hidden' : ''}
-          nextLinkClassName={currentPage === (pageCount-1) ? 'disabled hidden' : ''}
-          pageClassName={'hidden'}
-          breakClassName={'hidden'}
+          containerClassName="flex-1 flex justify-between mb-8 mt-4"
+          previousLinkClassName={currentPage === 0 ? "disabled hidden" : ""}
+          nextLinkClassName={currentPage === Math.max(pageCount-1, 0) ? "disabled hidden" : ""}
+          pageClassName="hidden"
+          breakClassName="hidden"
         />
       </div>
     </Layout>

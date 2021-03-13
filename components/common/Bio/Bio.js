@@ -17,7 +17,8 @@ export function Bio({ className }) {
       />
 
       <p className="text-base leading-7">
-        Written by <b className="font-semibold">{author.name}</b>{" "}<br></br>
+        Written by <a className="font-semibold" href={`https://github.com/${author.name}`} target="_blank" rel="noreferrer noopener">{author.name}</a>{" "}
+        <b>[ZH-TW/EN]</b><br></br>
         {author.summary}{" "}
       </p>
     </div>

@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { DarkModeSwitch } from "react-toggle-dark-mode";
 import { useTheme } from "next-themes";
+
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 
 export function Layout({ children }) {
   return (
-    <div className="w-full min-h-screen dark:bg-gray-600 dark:text-white">
+    <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-700 dark:text-white">
       <div className="max-w-screen-sm px-4 py-12 mx-auto antialiased font-body">
         <Header />
         <main>{children}</main>
@@ -15,7 +16,7 @@ export function Layout({ children }) {
           {/* © {new Date().getFullYear()}, Built with{" "}
           <a href="https://nextjs.org/">Next.js</a>
           &#128293; */}
-          © {new Date().getFullYear()} If you have any problem Please <a href="mailto:a8508235@gmail.com">contact me!</a>
+          © {new Date().getFullYear()} If you have any problem, feel free to <a href="mailto:a8508235@gmail.com">contact me!</a>
         </footer>
       </div>
     </div>
@@ -46,16 +47,16 @@ const Header = () => {
         "mb-2": !isRoot,
       })}
     >
-      <div className={"max-w-md"}>
+      <div className="max-w-md">
         {isRoot ? <LargeTitle /> : <SmallTitle />}
       </div>
-      {mounted && (
-        <DarkModeSwitch
-          checked={isDarkMode}
-          onChange={toggleDarkMode}
-          className={isRoot ? 28 : 24}
-        />
-      )}
+        {mounted && (
+          <DarkModeSwitch
+            checked={isDarkMode}
+            onChange={toggleDarkMode}
+            className={isRoot ? 28 : 24}
+          />
+        )}
     </header>
   );
 };
