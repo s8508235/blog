@@ -17,7 +17,7 @@ export function Layout({ children }) {
           {/* © {new Date().getFullYear()}, Built with{" "}
           <a href="https://nextjs.org/">Next.js</a>
           &#128293; */}
-          © {new Date().getFullYear()} If you have any problem, feel free to <a href="mailto:a8508235@gmail.com">contact me!</a>
+          © {new Date().getFullYear()} If you have any questions please feel free to <a href="mailto:a8508235@gmail.com">contact me!</a>
         </footer>
       </div>
     </div>
