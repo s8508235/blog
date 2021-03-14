@@ -4,6 +4,7 @@ const debug = process.env.NODE_ENV !== "production"
 module.exports = withPlugins(
     [optimizedImages],
     {
+        basePath:  !debug ? "/blog" : "",
         assetPrefix: !debug ? "/blog/" : "",
     }
 );
