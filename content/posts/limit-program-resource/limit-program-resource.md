@@ -1,10 +1,10 @@
 ---
-title: 使用 cgroup 來限制資源
+title: 使用 cgroups 來限制資源
 date: 2020-11-19T22:52:32.169Z
-description: Who doesn't like a long post showcasing the different headings?
+description: cgroups 是 control groups，為 linux 核心的一個功能
 ---
 
-來限制 memory 來簡單示範一下 cgroup
+來限制 memory 來簡單示範一下 cgroups
 
 ### Disclaimer
 我不知道這是不是正確的作法，因為從 docker 得到了 cgroups 相關知識，用來這邊，那麼進入正文
