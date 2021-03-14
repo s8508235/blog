@@ -6,7 +6,7 @@ export function SEO({ title, description = "" }) {
   const siteMetadata = getSiteMetaData();
 
   const metaDescription = description || siteMetadata.description;
-
+  const debug = process.env.NODE_ENV !== "production";
   return (
     <Head>
       <title>
@@ -20,8 +20,8 @@ export function SEO({ title, description = "" }) {
         property="og:description"
         content={metaDescription}
       />
-      <link rel="icon" type="image/png" href="/favicon.ico" />
-      <link rel="apple-touch-icon" type="image/png" href="/favicon.ico" />
+      <link rel="icon" type="image/png" href={!debug ? "/blog/favicon.ico" : "/favicon.ico"} />
+      <link rel="apple-touch-icon" href={!debug ? "/blog/favicon.ico" : "/favicon.ico"} />
     </Head>
   );
 }
