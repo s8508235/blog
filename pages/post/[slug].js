@@ -25,7 +25,10 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
           className="mb-4 prose lg:prose-lg dark:prose-dark"
           escapeHtml={false}
           source={post.content}
-          renderers={{ code: CodeBlock, image: MarkdownImage }}
+          renderers={{
+            code: CodeBlock, image: MarkdownImage,
+            link: props => <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>
+          }}
         />
         <hr className="mt-4" />
         <footer>
