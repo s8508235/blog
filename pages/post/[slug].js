@@ -27,7 +27,7 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
           source={post.content}
           renderers={{
             code: CodeBlock, image: MarkdownImage,
-            link: props => <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>
+            link: props => <Link href={props.href}><a target="_blank" rel="noopener noreferrer">{props.children}</a></Link>
           }}
         />
         <hr className="mt-4" />

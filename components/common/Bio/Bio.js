@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Link from "next/link";
 
 import { Image } from "..";
 import { getSiteMetaData } from "@utils/helpers";
@@ -17,7 +18,10 @@ export function Bio({ className }) {
       />
 
       <p className="text-base leading-7">
-        Written by <a className="font-semibold" href={`https://github.com/${author.name}`} target="_blank" rel="noreferrer noopener">{author.name}</a>{" "}
+        Written by{" "}
+        <Link href={`https://github.com/${author.name}`} >
+          <a className="font-semibold" target="_blank" rel="noreferrer noopener">{author.name}</a>
+        </Link>{" "}
         <b>[ZH-TW/EN]</b><br></br>
         {author.summary}{" "}
       </p>
