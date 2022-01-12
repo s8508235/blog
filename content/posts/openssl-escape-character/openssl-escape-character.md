@@ -11,7 +11,7 @@ When writing a script for target generation, I need to make a signature for each
 
 So I used `openssl` to generate it.
 ```
-echo -n "${message}" | openssl dst -sha256 -hmac -binary | base64
+echo -n "${message}" | openssl dgst -sha256 -hmac "${secret}" -binary | base64
 ```
 But I did not pass my authenticator.
 
@@ -43,6 +43,12 @@ function hmacSha256(message, secret) {
 ```
 
 When make `a\nmessage` as argument in Linux, it would be the same as `a\\nmessage`.
+
+Use 
+```
+echo -e -n "${message}" | openssl dgst -sha256 -hmac "${secret}" -binary | base64
+``` 
+instead.
 
 This was why my target generation script didn't pass the authenticator.
 
