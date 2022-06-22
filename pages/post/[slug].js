@@ -3,7 +3,8 @@ import ReactMarkdown from "react-markdown/with-html";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
 
-import { Layout, Image, SEO, Bio } from "@components/common";
+import Image from "next/image";
+import { Layout, SEO, Bio } from "@components/common";
 import { getPostBySlug, getPostsSlugs } from "@utils/posts";
 
 export default function Post({ post, frontmatter, nextPost, previousPost }) {
@@ -89,12 +90,13 @@ const CodeBlock = ({ language, value }) => {
   );
 };
 
-const MarkdownImage = ({ alt, src }) => (
-  <Image
-    alt={alt}
-    src={require(`../../content/assets/${src}`)}
-    webpSrc={require(`../../content/assets/${src}?webp`)}
-    previewSrc={require(`../../content/assets/${src}?lqip`)}
-    className="w-full"
-  />
-);
+const MarkdownImage = ({ alt, src }) => {
+  return (
+    <Image
+      alt={alt}
+      src={require(`../../content/assets/${src}`)}
+      placeholder="blur"
+      className="w-full"
+    />
+  );
+};
