@@ -11,4 +11,5 @@ module.exports = {
     loader: 'imgix',
     path: 'https://s8508235.github.io/blog',
   },
+  basePath: process.env.NODE_ENV === "production" ? '/blog' : '',
 };
