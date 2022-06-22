@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { DarkModeSwitch } from "react-toggle-dark-mode";
 import { useTheme } from "next-themes";
 
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 import RSSIcon from "@assets/svg/rss.svg";
 
 export function Layout({ children }) {
@@ -17,10 +17,10 @@ export function Layout({ children }) {
           {/* © {new Date().getFullYear()}, Built with{" "}
           <a href="https://nextjs.org/">Next.js</a>
           &#128293; */}
-          © {new Date().getFullYear()} If you have any problem Please <a href="mailto:a8508235@gmail.com">contact me!</a>
-        </footer >
-      </div >
-    </div >
+          © {new Date().getFullYear()} If you have any problem, feel free to <a href="mailto:a8508235@gmail.com">contact me!</a>
+        </footer>
+      </div>
+    </div>
   );
 }
 
@@ -48,7 +48,7 @@ const Header = () => {
         "mb-2": !isRoot,
       })}
     >
-      <div className={"max-w-md"}>
+      <div className="max-w-md">
         {isRoot ? <LargeTitle /> : <SmallTitle />}
       </div>
       {mounted && (
