@@ -9,7 +9,7 @@ module.exports = {
   },
   images: {
     loader: 'imgix',
-    path: 'https://s8508235.github.io/blog',
+    path: 'https://s8508235.github.io',
   },
   basePath: process.env.NODE_ENV === "production" ? '/blog' : '',
 };
