@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>s8508235's blog</title>
+        <link>https://s8508235.github.io/</link>
+        <description>undefined</description>
+        <lastBuildDate>Wed, 22 Jun 2022 12:33:40 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>zh-TW</language>
+        <copyright>Copyright © 2022 s8508235</copyright>
+        <item>
+            <title><![CDATA[Openssl escape character]]></title>
+            <link>https://s8508235.github.io/posts/openssl-escape-character</link>
+            <guid>openssl-escape-character</guid>
+            <pubDate>Fri, 07 Jan 2022 16:00:00 GMT</pubDate>
+            <description><![CDATA[Be careful about the escape character as Linux input]]></description>
+            <content:encoded><![CDATA[ 
+First of all, I pick [HTTP signature](https://datatracker.ietf.org/doc/html/draft-cavage-http-signatures-12) as my authorization method.
+
+I use [Vegeta](https://github.com/tsenart/vegeta) to load test my API service.
+
+When writing a script for target generation, I need to make a signature for each request.
+
+So I used `openssl` to generate it.
+```
+echo -n "${message}" | openssl dgst -sha256 -hmac "${secret}" -binary | base64
+```
+But I did not pass my authenticator.
+
+After some trying(use other language to reproduce what happened), I found that message used for generation was weird.(check the byte)
+
+Go:
+```go
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	b64 "encoding/base64"
+)
+// https://go.dev/play/p/JaDyZh_wNqn
+func hmacSha256(data string, secret string) string {
+	h := hmac.New(sha256.New, []byte(secret))
+	h.Write([]byte(data))
+	return b64.URLEncoding.EncodeToString(h.Sum(nil))
+}
+```
+
+Node:
+```javascript
+var crypto = require('crypto');
+function hmacSha256(message, secret) {
+    hmac = crypto.createHmac('sha256', secret);
+    hmac.update(message);
+    return hmac.digest('base64')
+}
+```
+
+When make `a\nmessage` as argument in Linux, it would be the same as `a\\nmessage`.
+
+Use 
+```
+echo -e -n "${message}" | openssl dgst -sha256 -hmac "${secret}" -binary | base64
+``` 
+instead.
+
+This was why my target generation script didn't pass the authenticator.
+
+I had definitely known how the escape character works, but I didn't check it in the first place.
+
+When using escape character as Linux input, you should be careful about it.
+
+Openssl might be a misplace but never mind. I found the problem from it.
+
+Just write a note to remember the time wasted on it.]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[An introduction to Window TinyLFU]]></title>
+            <link>https://s8508235.github.io/posts/cache-policy</link>
+            <guid>cache-policy</guid>
+            <pubDate>Mon, 26 Apr 2021 16:00:00 GMT</pubDate>
+            <description><![CDATA[TinyLFU is a frequency-based cache admission policy]]></description>
+            <content:encoded><![CDATA[ 
+## Foreword
+I will just easily go through techniques used by Window TinyLFU.
+
+## Why Cache?
+Because we want to access data fast. The buffering provided by a cache benefits both latency and throughput.
+
+## Eviction Policies
+- Since we cannot cache all data we have, we need to discard some cache when out of space
+- We should consider what the cost is if we choose the policy
+- Eviction decisions should be done in an efficient manner, in order to avoid a situation in which the computation and space overheads required to answer these questions surpasses the benefit of using the cache
+- Hit rate, latency & space matter
+
+#### Examples
+- Least recently used (LRU): Discards the least recently used items first
+- Least frequently used (LFU): Discards data that was least frequently used
+- Segment LRU (SLRU):
+  - SLRU cache is divided into two segments, a probationary segment and a
+protected segment
+  - Lines in each segment are ordered from the most to the least recently
+accessed
+  - Data from misses is added to the cache at the most recently accessed end of
+the probationary segment
+  - Hits are removed from wherever they currently reside and added to the most
+recently accessed end of the protected segment
+  - Lines in the protected segment have thus been accessed at least twice
+
+## Probability data structure
+
+#### Examples
+- Bloom Filter
+  - Pairwise independent hash functions
+  - Used to test whether an element is a member of a set
+  - Two result: "possibly in set" or "definitely not in set"
+  - isInSet(input) = (h1(input) and h2(input) and h3(input) ...)
+- Count-min Sketch
+  - Pairwise independent hash functions
+  - Used to count elements
+  - count(input) = min(h1(input), h2(input), h3(input), ...)
+
+## Admission policy
+- Hope to boost the effectiveness of caches
+- Given a newly accessed item and an eviction candidate from the cache, our
+scheme decides, based on the recent access history, whether it is worth
+admitting the new item into the cache at the expense of the eviction candidate
+- An accessed item is only inserted into the cache if an admission policy
+decides that the cache hit ratio is likely to benefit from replacing it with the
+cache victim
+
+### TinyLFU
+TinyLFU admission policy use Bloom Filter and Count-min Sketch to trace state of elements.
+![TinyLFU structure](cache-policy-pics/tinylfu.png)
+
+If there is a new element insert event that makes the main cache(SLRU) discard its element, they will be compared with the
+state of TinyLFU admission policy (Bloom Filter and Count-min Sketch).
+![TinyLFU with Main Cache](cache-policy-pics/tinylfu-2.png)
+
+Finally, for sparse bursts, the paper suggest a LRU as window cache.
+![W-TinyLFU](cache-policy-pics/w-tinylfu.png)
+
+## Reference
+- [Cache(wikipedia)](https://en.wikipedia.org/wiki/Cache_(computing))
+- [Cache replacement policies](https://en.wikipedia.org/wiki/Cache_replacement_policies)
+- [Caffeine wiki](https://github.com/ben-manes/caffeine/wiki/Efficiency)
+- [Window TinyLFU paper](https://dl.acm.org/doi/10.1145/3149371)]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[2021 March note]]></title>
+            <link>https://s8508235.github.io/posts/2021-march-note</link>
+            <guid>2021-march-note</guid>
+            <pubDate>Fri, 26 Mar 2021 16:00:00 GMT</pubDate>
+            <description><![CDATA[webrtc/linux/network reading]]></description>
+            <content:encoded><![CDATA[ 
+## 聲明
+我想筆記摘要是作給未來的自己用的，不過如果剛好有人看到我的筆記去讀原文的話，那是再好不過。<del>有人只看筆記不看課本的嗎</del>
+
+如果有錯也歡迎糾正，謝謝指教。
+
+## Reading
+- [Why video chat is a hard technical problem](https://dev.to/lazerwalker/why-video-chat-is-a-hard-technical-problem-43gj)
+  - 本文主要是開發 webrtc 會遇到的問題
+  - 瀏覽器支援不一
+  - 需要自己的後端並且可能需要面對過多 peer to peer 連線 ( Websocket -> STUN -> SFU)
+  - 應該也是因為這樣才會有第三方 SDK 在做這些事情吧
+- [TLS 1.3 / QUIC 與 HTTP/3 對效能的改善](https://hkt999.medium.com/tls-1-3-quic-%E8%88%87-http-3-%E5%B0%8D%E6%95%88%E8%83%BD%E7%9A%84%E6%94%B9%E5%96%84-a37b2ddcfc95)
+  - 本文主要是 QUIC 介紹
+  - [latency](https://www.igvita.com/2012/07/19/latency-the-new-web-performance-bottleneck) 影響
+  - 基於 UDP
+  - TLS 1.3 的 handshake 會先 Client HELLO (CHLO) 來節省 RTT
+  - QUIC 的 handshake 類似 TLS 1.3 ( inchoate CHLO 似乎有可能一次傳不完)
+  - 解決 TCP retransmission ambiguity problem
+  - 這個[pdf](https://www.uio.no/studier/emner/matnat/ifi/INF5072/v18/2018_jan25_quic_sferlin.pdf)有詳盡的介紹
+
+- [Persistent "pipes" in Linux](https://gist.github.com/CAFxX/571a1558db9a7b393579)
+  - persistent pipe ([pipe](https://man7.org/linux/man-pages/man2/pipe.2.html) 為 Linux 重新導向資料的方法) 
+  - hole punching 為 Linux [fallocate](https要://man7.org/linux/man-pages/man2/fallocate.2.html) 提供的特性，可以標注一個檔案哪段不要 (the logical size of the file does not change; only the physical size (the number of blocks) may change)
+  - 利用這個特性把檔案當作 queue 來使用且 lseek 可以跳過 hole
+
+- [Why kafka is so fast](https://medium.com/swlh/why-kafka-is-so-fast-bde0d987cd03)
+  - 實時並不代表快，而是可預測
+  - 針對吞吐量去最佳化
+  - log-structured -> append-only log -> sequential 很多系統也都採用，有興趣可參考[此書](https://www.databass.dev)
+  - record batch 像 [redis pipeline](https://redis.io/topics/pipelining) 一樣，遇到網路問題的話還是要為了減少 RTT 還做 batch
+  - cheap consumers 不移除 message 而是增加 offset，並依靠之前的 sequential read
+  - unflushed buffered writes 不會 fsync -> \
+  disk-backed in-memory queue ->\
+  一個 ack 的 write 並不代表 durability ->\
+  用 replica 來 cover
+  - 
+- RCU
+  - [Linux 核心設計: RCU 同步機制](https://hackmd.io/@sysprog/linux-rcu)
+  - [What is RCU, Fundamentally?](http://lwn.net/Articles/262464/)
+  - [What is RCU? Part 2: Usage](https://lwn.net/Articles/263130/)
+  - [RCU part 3: the RCU API](https://lwn.net/Articles/264090/)
+  - [Linux中的RCU的那點事](https://www.huaweicloud.com/articles/74854d8cc300d73a76b7b526044f6709.html)
+  -  one writer multiple readers. mainly require 3 mechanisms to implement it.
+        1. Publish-Subscribe Mechanism (insertion)
+        1. Wait For Pre-Existing RCU Readers to Complete (deletion)
+        1. Maintain Multiple Versions of Recently Updated Objects (reader update)
+  - RCU 並不保證一定能讀到新增的節點或不讀到要被刪除的節點 (grace period)
+  - RCU 讓 reader 不需要 lock 和不需要擔心 [memory barrier](https://en.wikipedia.org/wiki/Memory_barrier) (為了 instruction pipeline 效能提昇而讓 instruction 亂序執行， memory barrier 是為了避免亂序而使用) 且有不錯的效能]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[使用 cgroups 來限制資源]]></title>
+            <link>https://s8508235.github.io/posts/limit-program-resource</link>
+            <guid>limit-program-resource</guid>
+            <pubDate>Thu, 19 Nov 2020 16:00:00 GMT</pubDate>
+            <description><![CDATA[cgroups 是 control groups，為 linux 核心的一個功能]]></description>
+            <content:encoded><![CDATA[
+來限制 memory 來簡單示範一下 cgroups
+
+### Disclaimer
+我不知道這是不是正確的作法，因為從 docker 得到了 cgroups 相關知識，用來這邊，那麼進入正文
+
+---
+### Installation
+```
+apt install cgroup-tools
+```
+
+or
+``` 
+yum install libcgroup
+yum install libcgroup-tools
+```
+### 建立 cgroup
+
+```cgcreate  -g subsystems:path``` <del>詳情請洽 red hat 官網</del>
+
+關於 subsystem 也可以去 `/sys/fs/cgroup` 下面看內建的
+
+也會看到其他教學是直接在 `/sys/fs/cgroup/` 下直接加資料夾，也會自動幫你加完相關檔案
+
+```
+sudo cgcreate -g memory:/mem_test
+```
+
+### 增加限制
+
+可以看到在新增 cgroup 後，可以發現 `/sys/fs/cgroup/memory/memory_test` 下面多了一些檔案
+
+這邊主要看 `memory.limit_in_bytes` 和 `memory.usage_in_bytes` 就好，
+
+用 
+```
+cat /sys/fs/cgroup/memory/memory_test/memory.limit_in_bytes
+``` 
+或 
+```
+cgget -g memory:mem_test | grep memory.limit_in_bytes
+``` 
+來查看設定，接著是用 
+```
+cgset -r memory.limit_in_bytes=100G mem_test
+``` 
+<del>為什麼這邊不一樣啊! <small>如果沒有變的話就加上 sudo </small></del>
+
+### 執行程式
+
+`cgexec -g memory:/mem_test command [argument]`
+
+例如:
+```
+cgexec -g memory:/mem_test ping 8.8.8.8
+```
+
+### 觀察
+
+可以使用以下指令來看在這個 cgroup 執行的 process
+```
+systemd-cgls memory:/mem_test
+``` 
+
+看在 cgroup 使用的 memory <del>應該有更好的方法，歡迎提供</del>
+
+```
+watch -n 1 "cgget -g memory:mem_test | grep memory.usage_in_bytes"
+``` 
+
+
+### 刪除 cgroup
+
+```
+sudo cgdelete memory:/mem_test
+```
+
+### Conclusion
+
+這樣就完成簡單的限制資源，還有其他 subsystem ( cpu, blkio, devices 等等) 可以實作，也可以互相組合，雖然是被大量應用在各種容器技術中，但也是可以簡單拿出來用用看。<del>大概吧</del>
+
+### Reference
+- [Red hat Resource management Chapter 2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/resource_management_guide/ch-using_control_groups)]]></content:encoded>
+        </item>
+    </channel>
+</rss>
