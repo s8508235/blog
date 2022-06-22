@@ -7,4 +7,8 @@ module.exports = {
 
     return config;
   },
+  images: {
+    loader: 'imgix',
+    path: 'https://s8508235.github.io/blog',
+  },
 };
