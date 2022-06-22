@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { DarkModeSwitch } from "react-toggle-dark-mode";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 
 import RSSIcon from "@assets/svg/rss.svg";
 
@@ -15,12 +14,13 @@ export function Layout({ children }) {
         <Header />
         <main>{children}</main>
         <footer className="text-lg font-light">
-          © {new Date().getFullYear()}, Built with{" "}
+          {/* © {new Date().getFullYear()}, Built with{" "}
           <a href="https://nextjs.org/">Next.js</a>
-          &#128293;
-        </footer>
-      </div>
-    </div>
+          &#128293; */}
+          © {new Date().getFullYear()} If you have any problem Please <a href="mailto:a8508235@gmail.com">contact me!</a>
+        </footer >
+      </div >
+    </div >
   );
 }
 
@@ -72,10 +72,10 @@ const LargeTitle = () => (
         className={clsx(
           "text-3xl font-black leading-none text-black no-underline font-display",
           "sm:text-5xl",
-          "dark:text-white"
+          "dark:text-blue-400"
         )}
       >
-        Next.Js Starter Blog
+        Minimal blog
       </a>
     </Link>
   </h1>
@@ -87,10 +87,10 @@ const SmallTitle = () => (
       <a
         className={clsx(
           "text-2xl font-black text-black no-underline font-display",
-          "dark:text-white"
+          "dark:text-blue-400"
         )}
       >
-        Next.Js Starter Blog
+        Minimal blog
       </a>
     </Link>
   </h1>
