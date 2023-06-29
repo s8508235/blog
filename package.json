@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
+    "lint": "next lint",
     "deploy": "rm -rf node_modules/.cache && next build && next export && touch out/.nojekyll && git add -f out/ && git commit -m \"Deploy Next.js to gh-pages\" && git subtree push --prefix out origin gh-pages"
   },
   "dependencies": {
@@ -33,6 +34,8 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.4.1",
     "autoprefixer": "^10.4.0",
+    "eslint": "8.43.0",
+    "eslint-config-next": "13.4.7",
     "gray-matter": "^4.0.3",
     "postcss": "^8.4.4",
     "tailwindcss": "^2.2.19"
