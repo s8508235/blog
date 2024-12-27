@@ -1,0 +1,10 @@
+baseURL: https://s85082535.github.io/blog
+languageCode: en-us
+title: Minimal blog
+theme: ["PaperMod"]
+params:
+  ShowFullTextinRSS: true
+outputFormats:
+  RSS:
+    mediatype: "application/rss"
+    baseName: "rss"

@@ -1,368 +1,232 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-    <channel>
-        <title>s8508235's blog</title>
-        <link>https://s8508235.github.io/</link>
-        <description>undefined</description>
-        <lastBuildDate>Thu, 29 Jun 2023 12:13:04 GMT</lastBuildDate>
-        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
-        <generator>https://github.com/jpmonette/feed</generator>
-        <language>zh-TW</language>
-        <copyright>Copyright © 2023 s8508235</copyright>
-        <item>
-            <title><![CDATA[Hyper V wireguard]]></title>
-            <link>https://s8508235.github.io/posts/hyper-v-wireguard</link>
-            <guid>hyper-v-wireguard</guid>
-            <pubDate>Thu, 29 Jun 2023 16:00:00 GMT</pubDate>
-            <description><![CDATA[add hyper v vm and setup wireguard server]]></description>
-            <content:encoded><![CDATA[ 
-## Prerequisite knowledge
-- Hyper V
-- Wireguard
-
-## Step 1 新增 VM
-[新增 hyper-v VM](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-machine-in-hyper-v)
-(個人是使用 ubuntu server)
-
-[並使用 external switch](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines)
-
-## Step 2 安裝 wireguard
-新增 user 等 linux 設定這邊跳過，需要的話請參考[鳥哥私房菜](https://linux.vbird.org/linux_basic/centos7/0410accountmanager.php)
-```sh
-sudo apt install wireguard
-```
-## Step 3 設定 server
-[生成 wireguard config](https://www.wireguardconfig.com/) (記得不要關掉，後面還會用到)
-
-加上 DNS 後(建議)將 server config 存成 `wg0.conf` 並使用
-
-```sh
-wg-quick up ./wg0.conf
-```
-
-開啟 server (wg-quick 需要 sudo)。
-
-如網路沒通，需要在 `wg0.conf` 的`[Interface]`中加上
-
-```conf
-PreUp = sysctl -w net.ipv4.ip_forward=1
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Minimal blog</title>
+    <link>http://localhost:1313/blog/</link>
+    <description>Recent content on Minimal blog</description>
+    <generator>Hugo -- 0.140.1</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 29 Jun 2023 18:57:11 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hyper V Wireguard</title>
+      <link>http://localhost:1313/blog/posts/hyper-v-wireguard/</link>
+      <pubDate>Thu, 29 Jun 2023 18:57:11 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/hyper-v-wireguard/</guid>
+      <description>add hyper v vm and setup wireguard server</description>
+      <content:encoded><![CDATA[<h2 id="prerequisite-knowledge">Prerequisite knowledge</h2>
+<ul>
+<li>Hyper V</li>
+<li>Wireguard</li>
+</ul>
+<h2 id="step-1-新增-vm">Step 1 新增 VM</h2>
+<p><a href="https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-machine-in-hyper-v">新增 hyper-v VM</a>
+(個人是使用 ubuntu server)</p>
+<p><a href="https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines">並使用 external switch</a></p>
+<h2 id="step-2-安裝-wireguard">Step 2 安裝 wireguard</h2>
+<p>新增 user 等 linux 設定這邊跳過，需要的話請參考<a href="https://linux.vbird.org/linux_basic/centos7/0410accountmanager.php">鳥哥私房菜</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install wireguard
+</span></span></code></pre></div><h2 id="step-3-設定-server">Step 3 設定 server</h2>
+<p><a href="https://www.wireguardconfig.com/">生成 wireguard config</a> (記得不要關掉，後面還會用到)</p>
+<p>加上 DNS 後(建議)將 server config 存成 <code>wg0.conf</code> 並使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wg-quick up ./wg0.conf
+</span></span></code></pre></div><p>開啟 server (wg-quick 需要 sudo)。</p>
+<p>如網路沒通，需要在 <code>wg0.conf</code> 的<code>[Interface]</code>中加上</p>
+<pre tabindex="0"><code class="language-conf" data-lang="conf">PreUp = sysctl -w net.ipv4.ip_forward=1
 PreUp = sysctl -w net.ipv6.conf.all.forwarding=1
-```
-讓網路能夠 forward (或直接跑這兩個指令，只需要設定一次)。
-
-## Step 3.5 查看 server
-到這邊 server 的部分就結束了，
-可以使用
-```
-watch -n 1 sudo wg
-```
-來看 wireguard 的情況。
-
-## Step 4 client 安裝
-在需要的機器上下載 [wireguard 用戶端](https://www.wireguard.com/install/)
-
-並將 client config (生成 wireguard config 部分) 存成 `wg0.conf` 將其匯入用戶端便可使用
-
-
-## Optional
-因為通常家裡都是浮動 IP，所以需要 DDNS，
-
-這邊使用 [DuckDNS](https://www.duckdns.org/)，記得先安裝 curl
-```sh
-sudo apt install curl
-```
-
-註冊完後可以有 5 個 DDNS 的名額，依照[linux cron 的步驟](https://www.duckdns.org/install.jsp)設定，
-(DuckDNS 很貼心都有換成你自己的 token 和 domain)
-
-並可得到 `xxx.duckdns.org` 的 domain，將其輸入在 Endpoint 的地方即可( port 要留著)。
-
-## Final words
-將之前寫的 [AWS wireguard setup](https://github.com/s8508235/wireguard-terraform-install) 用 windows hyper-v 實現一次，
-後來才發現有別人寫好的 [windows solution](https://github.com/micahmo/WgServerforWindows)，有興趣的可以研究一下。]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Openssl escape character]]></title>
-            <link>https://s8508235.github.io/posts/openssl-escape-character</link>
-            <guid>openssl-escape-character</guid>
-            <pubDate>Fri, 07 Jan 2022 16:00:00 GMT</pubDate>
-            <description><![CDATA[Be careful about the escape character as Linux input]]></description>
-            <content:encoded><![CDATA[ 
-First of all, I pick [HTTP signature](https://datatracker.ietf.org/doc/html/draft-cavage-http-signatures-12) as my authorization method.
-
-I use [Vegeta](https://github.com/tsenart/vegeta) to load test my API service.
-
-When writing a script for target generation, I need to make a signature for each request.
-
-So I used `openssl` to generate it.
-```
-echo -n "${message}" | openssl dgst -sha256 -hmac "${secret}" -binary | base64
-```
-But I did not pass my authenticator.
-
-After some trying(use other language to reproduce what happened), I found that message used for generation was weird.(check the byte)
-
-Go:
-```go
-import (
-	"crypto/hmac"
-	"crypto/sha256"
-	b64 "encoding/base64"
-)
-// https://go.dev/play/p/JaDyZh_wNqn
-func hmacSha256(data string, secret string) string {
-	h := hmac.New(sha256.New, []byte(secret))
-	h.Write([]byte(data))
-	return b64.URLEncoding.EncodeToString(h.Sum(nil))
-}
-```
-
-Node:
-```javascript
-var crypto = require('crypto');
-function hmacSha256(message, secret) {
-    hmac = crypto.createHmac('sha256', secret);
-    hmac.update(message);
-    return hmac.digest('base64')
-}
-```
-
-When make `a\nmessage` as argument in Linux, it would be the same as `a\\nmessage`.
-
-Use 
-```
-echo -e -n "${message}" | openssl dgst -sha256 -hmac "${secret}" -binary | base64
-``` 
-instead.
-
-This was why my target generation script didn't pass the authenticator.
-
-I had definitely known how the escape character works, but I didn't check it in the first place.
-
-When using escape character as Linux input, you should be careful about it.
-
-Openssl might be a misplace but never mind. I found the problem from it.
-
-Just write a note to remember the time wasted on it.]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[An introduction to Window TinyLFU]]></title>
-            <link>https://s8508235.github.io/posts/cache-policy</link>
-            <guid>cache-policy</guid>
-            <pubDate>Mon, 26 Apr 2021 16:00:00 GMT</pubDate>
-            <description><![CDATA[TinyLFU is a frequency-based cache admission policy]]></description>
-            <content:encoded><![CDATA[ 
-## Foreword
-I will just easily go through techniques used by Window TinyLFU.
-
-## Why Cache?
-Because we want to access data fast. The buffering provided by a cache benefits both latency and throughput.
-
-## Eviction Policies
-- Since we cannot cache all data we have, we need to discard some cache when out of space
-- We should consider what the cost is if we choose the policy
-- Eviction decisions should be done in an efficient manner, in order to avoid a situation in which the computation and space overheads required to answer these questions surpasses the benefit of using the cache
-- Hit rate, latency & space matter
-
-#### Examples
-- Least recently used (LRU): Discards the least recently used items first
-- Least frequently used (LFU): Discards data that was least frequently used
-- Segment LRU (SLRU):
-  - SLRU cache is divided into two segments, a probationary segment and a
-protected segment
-  - Lines in each segment are ordered from the most to the least recently
-accessed
-  - Data from misses is added to the cache at the most recently accessed end of
-the probationary segment
-  - Hits are removed from wherever they currently reside and added to the most
-recently accessed end of the protected segment
-  - Lines in the protected segment have thus been accessed at least twice
-
-## Probability data structure
-
-#### Examples
-- Bloom Filter
-  - Pairwise independent hash functions
-  - Used to test whether an element is a member of a set
-  - Two result: "possibly in set" or "definitely not in set"
-  - isInSet(input) = (h1(input) and h2(input) and h3(input) ...)
-- Count-min Sketch
-  - Pairwise independent hash functions
-  - Used to count elements
-  - count(input) = min(h1(input), h2(input), h3(input), ...)
-
-## Admission policy
-- Hope to boost the effectiveness of caches
-- Given a newly accessed item and an eviction candidate from the cache, our
+</code></pre><p>讓網路能夠 forward (或直接跑這兩個指令，只需要設定一次)。</p>
+<h2 id="step-35-查看-server">Step 3.5 查看 server</h2>
+<p>到這邊 server 的部分就結束了，
+可以使用</p>
+<pre tabindex="0"><code>watch -n 1 sudo wg
+</code></pre><p>來看 wireguard 的情況。</p>
+<h2 id="step-4-client-安裝">Step 4 client 安裝</h2>
+<p>在需要的機器上下載 <a href="https://www.wireguard.com/install/">wireguard 用戶端</a></p>
+<p>並將 client config (生成 wireguard config 部分) 存成 <code>wg0.conf</code> 將其匯入用戶端便可使用</p>
+<h2 id="optional">Optional</h2>
+<p>因為通常家裡都是浮動 IP，所以需要 DDNS，</p>
+<p>這邊使用 <a href="https://www.duckdns.org/">DuckDNS</a>，記得先安裝 curl</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install curl
+</span></span></code></pre></div><p>註冊完後可以有 5 個 DDNS 的名額，依照<a href="https://www.duckdns.org/install.jsp">linux cron 的步驟</a>設定，
+(DuckDNS 很貼心都有換成你自己的 token 和 domain)</p>
+<p>並可得到 <code>xxx.duckdns.org</code> 的 domain，將其輸入在 Endpoint 的地方即可( port 要留著)。</p>
+<h2 id="final-words">Final words</h2>
+<p>將之前寫的 <a href="https://github.com/s8508235/wireguard-terraform-install">AWS wireguard setup</a> 用 windows hyper-v 實現一次，
+後來才發現有別人寫好的 <a href="https://github.com/micahmo/WgServerforWindows">windows solution</a>，有興趣的可以研究一下。</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Openssl escape character</title>
+      <link>http://localhost:1313/blog/posts/openssl-escape-character/</link>
+      <pubDate>Sat, 08 Jan 2022 14:33:27 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/openssl-escape-character/</guid>
+      <description>Be careful about the escape character as Linux input</description>
+      <content:encoded><![CDATA[<p>First of all, I pick <a href="https://datatracker.ietf.org/doc/html/draft-cavage-http-signatures-12">HTTP signature</a> as my authorization method.</p>
+<p>I use <a href="https://github.com/tsenart/vegeta">Vegeta</a> to load test my API service.</p>
+<p>When writing a script for target generation, I need to make a signature for each request.</p>
+<p>So I used <code>openssl</code> to generate it.</p>
+<pre tabindex="0"><code>echo -n &#34;${message}&#34; | openssl dgst -sha256 -hmac &#34;${secret}&#34; -binary | base64
+</code></pre><p>But I did not pass my authenticator.</p>
+<p>After some trying(use other language to reproduce what happened), I found that message used for generation was weird.(check the byte)</p>
+<p>Go:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/hmac&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/sha256&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b64</span> <span style="color:#e6db74">&#34;encoding/base64&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// https://go.dev/play/p/JaDyZh_wNqn
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hmacSha256</span>(<span style="color:#a6e22e">data</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">secret</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hmac</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">sha256</span>.<span style="color:#a6e22e">New</span>, []byte(<span style="color:#a6e22e">secret</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">data</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b64</span>.<span style="color:#a6e22e">URLEncoding</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Sum</span>(<span style="color:#66d9ef">nil</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Node:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">crypto</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;crypto&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">hmacSha256</span>(<span style="color:#a6e22e">message</span>, <span style="color:#a6e22e">secret</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hmac</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">crypto</span>.<span style="color:#a6e22e">createHmac</span>(<span style="color:#e6db74">&#39;sha256&#39;</span>, <span style="color:#a6e22e">secret</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hmac</span>.<span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">message</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hmac</span>.<span style="color:#a6e22e">digest</span>(<span style="color:#e6db74">&#39;base64&#39;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>When make <code>a\nmessage</code> as argument in Linux, it would be the same as <code>a\\nmessage</code>.</p>
+<p>Use</p>
+<pre tabindex="0"><code>echo -e -n &#34;${message}&#34; | openssl dgst -sha256 -hmac &#34;${secret}&#34; -binary | base64
+</code></pre><p>instead.</p>
+<p>This was why my target generation script didn&rsquo;t pass the authenticator.</p>
+<p>I had definitely known how the escape character works, but I didn&rsquo;t check it in the first place.</p>
+<p>When using escape character as Linux input, you should be careful about it.</p>
+<p>Openssl might be a misplace but never mind. I found the problem from it.</p>
+<p>Just write a note to remember the time wasted on it.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Introduction to TinyLFU</title>
+      <link>http://localhost:1313/blog/posts/intro-tinylfu/</link>
+      <pubDate>Mon, 26 Apr 2021 20:20:51 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/intro-tinylfu/</guid>
+      <description>TinyLFU is a frequency-based cache</description>
+      <content:encoded><![CDATA[<h2 id="foreword">Foreword</h2>
+<p>I will just easily go through techniques u【sed by Window TinyLFU.</p>
+<h2 id="why-cache">Why Cache?</h2>
+<p>Because we want to access data fast. The buffering provided by a cache benefits both latency and throughput.</p>
+<h2 id="eviction-policies">Eviction Policies</h2>
+<ul>
+<li>Since we cannot cache all data we have, we need to discard some cache when out of space</li>
+<li>We should consider what the cost is if we choose the policy</li>
+<li>Eviction decisions should be done in an efficient manner, in order to avoid a situation in which the computation and space overheads required to answer these questions surpasses the benefit of using the cache</li>
+<li>Hit rate, latency &amp; space matter</li>
+</ul>
+<h4 id="examples">Examples</h4>
+<ul>
+<li>Least recently used (LRU): Discards the least recently used items first</li>
+<li>Least frequently used (LFU): Discards data that was least frequently used</li>
+<li>Segment LRU (SLRU):
+<ul>
+<li>SLRU cache is divided into two segments, a probationary segment and a
+protected segment</li>
+<li>Lines in each segment are ordered from the most to the least recently
+accessed</li>
+<li>Data from misses is added to the cache at the most recently accessed end of
+the probationary segment</li>
+<li>Hits are removed from wherever they currently reside and added to the most
+recently accessed end of the protected segment</li>
+<li>Lines in the protected segment have thus been accessed at least twice</li>
+</ul>
+</li>
+</ul>
+<h2 id="probability-data-structure">Probability data structure</h2>
+<h4 id="examples-1">Examples</h4>
+<ul>
+<li>Bloom Filter
+<ul>
+<li>Pairwise independent hash functions</li>
+<li>Used to test whether an element is a member of a set</li>
+<li>Two result: &ldquo;possibly in set&rdquo; or &ldquo;definitely not in set&rdquo;</li>
+<li>isInSet(input) = (h1(input) and h2(input) and h3(input) &hellip;)</li>
+</ul>
+</li>
+<li>Count-min Sketch
+<ul>
+<li>Pairwise independent hash functions</li>
+<li>Used to count elements</li>
+<li>count(input) = min(h1(input), h2(input), h3(input), &hellip;)</li>
+</ul>
+</li>
+</ul>
+<h2 id="admission-policy">Admission policy</h2>
+<ul>
+<li>Hope to boost the effectiveness of caches</li>
+<li>Given a newly accessed item and an eviction candidate from the cache, our
 scheme decides, based on the recent access history, whether it is worth
-admitting the new item into the cache at the expense of the eviction candidate
-- An accessed item is only inserted into the cache if an admission policy
+admitting the new item into the cache at the expense of the eviction candidate</li>
+<li>An accessed item is only inserted into the cache if an admission policy
 decides that the cache hit ratio is likely to benefit from replacing it with the
-cache victim
-
-### TinyLFU
-TinyLFU admission policy use Bloom Filter and Count-min Sketch to trace state of elements.
-![TinyLFU structure](cache-policy-pics/tinylfu.png)
-
-If there is a new element insert event that makes the main cache(SLRU) discard its element, they will be compared with the
+cache victim</li>
+</ul>
+<h3 id="tinylfu">TinyLFU</h3>
+<p>TinyLFU admission policy use Bloom Filter and Count-min Sketch to trace state of elements.
+<img alt="TinyLFU structure" loading="lazy" src="/blog/cache-policy-pics/tinylfu.png"></p>
+<p>If there is a new element insert event that makes the main cache(SLRU) discard its element, they will be compared with the
 state of TinyLFU admission policy (Bloom Filter and Count-min Sketch).
-![TinyLFU with Main Cache](cache-policy-pics/tinylfu-2.png)
-
-Finally, for sparse bursts, the paper suggest a LRU as window cache.
-![W-TinyLFU](cache-policy-pics/w-tinylfu.png)
-
-## Reference
-- [Cache(wikipedia)](https://en.wikipedia.org/wiki/Cache_(computing))
-- [Cache replacement policies](https://en.wikipedia.org/wiki/Cache_replacement_policies)
-- [Caffeine wiki](https://github.com/ben-manes/caffeine/wiki/Efficiency)
-- [Window TinyLFU paper](https://dl.acm.org/doi/10.1145/3149371)]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[2021 March note]]></title>
-            <link>https://s8508235.github.io/posts/2021-march-note</link>
-            <guid>2021-march-note</guid>
-            <pubDate>Fri, 26 Mar 2021 16:00:00 GMT</pubDate>
-            <description><![CDATA[webrtc/linux/network reading]]></description>
-            <content:encoded><![CDATA[ 
-## 聲明
-我想筆記摘要是作給未來的自己用的，不過如果剛好有人看到我的筆記去讀原文的話，那是再好不過。<del>有人只看筆記不看課本的嗎</del>
-
-如果有錯也歡迎糾正，謝謝指教。
-
-## Reading
-- [Why video chat is a hard technical problem](https://dev.to/lazerwalker/why-video-chat-is-a-hard-technical-problem-43gj)
-  - 本文主要是開發 webrtc 會遇到的問題
-  - 瀏覽器支援不一
-  - 需要自己的後端並且可能需要面對過多 peer to peer 連線 ( Websocket -> STUN -> SFU)
-  - 應該也是因為這樣才會有第三方 SDK 在做這些事情吧
-- [TLS 1.3 / QUIC 與 HTTP/3 對效能的改善](https://hkt999.medium.com/tls-1-3-quic-%E8%88%87-http-3-%E5%B0%8D%E6%95%88%E8%83%BD%E7%9A%84%E6%94%B9%E5%96%84-a37b2ddcfc95)
-  - 本文主要是 QUIC 介紹
-  - [latency](https://www.igvita.com/2012/07/19/latency-the-new-web-performance-bottleneck) 影響
-  - 基於 UDP
-  - TLS 1.3 的 handshake 會先 Client HELLO (CHLO) 來節省 RTT
-  - QUIC 的 handshake 類似 TLS 1.3 ( inchoate CHLO 似乎有可能一次傳不完)
-  - 解決 TCP retransmission ambiguity problem
-  - 這個[pdf](https://www.uio.no/studier/emner/matnat/ifi/INF5072/v18/2018_jan25_quic_sferlin.pdf)有詳盡的介紹
-
-- [Persistent "pipes" in Linux](https://gist.github.com/CAFxX/571a1558db9a7b393579)
-  - persistent pipe ([pipe](https://man7.org/linux/man-pages/man2/pipe.2.html) 為 Linux 重新導向資料的方法) 
-  - hole punching 為 Linux [fallocate](https要://man7.org/linux/man-pages/man2/fallocate.2.html) 提供的特性，可以標注一個檔案哪段不要 (the logical size of the file does not change; only the physical size (the number of blocks) may change)
-  - 利用這個特性把檔案當作 queue 來使用且 lseek 可以跳過 hole
-
-- [Why kafka is so fast](https://medium.com/swlh/why-kafka-is-so-fast-bde0d987cd03)
-  - 實時並不代表快，而是可預測
-  - 針對吞吐量去最佳化
-  - log-structured -> append-only log -> sequential 很多系統也都採用，有興趣可參考[此書](https://www.databass.dev)
-  - record batch 像 [redis pipeline](https://redis.io/topics/pipelining) 一樣，遇到網路問題的話還是要為了減少 RTT 還做 batch
-  - cheap consumers 不移除 message 而是增加 offset，並依靠之前的 sequential read
-  - unflushed buffered writes 不會 fsync -> \
-  disk-backed in-memory queue ->\
-  一個 ack 的 write 並不代表 durability ->\
-  用 replica 來 cover
-  - 
-- RCU
-  - [Linux 核心設計: RCU 同步機制](https://hackmd.io/@sysprog/linux-rcu)
-  - [What is RCU, Fundamentally?](http://lwn.net/Articles/262464/)
-  - [What is RCU? Part 2: Usage](https://lwn.net/Articles/263130/)
-  - [RCU part 3: the RCU API](https://lwn.net/Articles/264090/)
-  - [Linux中的RCU的那點事](https://www.huaweicloud.com/articles/74854d8cc300d73a76b7b526044f6709.html)
-  -  one writer multiple readers. mainly require 3 mechanisms to implement it.
-        1. Publish-Subscribe Mechanism (insertion)
-        1. Wait For Pre-Existing RCU Readers to Complete (deletion)
-        1. Maintain Multiple Versions of Recently Updated Objects (reader update)
-  - RCU 並不保證一定能讀到新增的節點或不讀到要被刪除的節點 (grace period)
-  - RCU 讓 reader 不需要 lock 和不需要擔心 [memory barrier](https://en.wikipedia.org/wiki/Memory_barrier) (為了 instruction pipeline 效能提昇而讓 instruction 亂序執行， memory barrier 是為了避免亂序而使用) 且有不錯的效能]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[使用 cgroups 來限制資源]]></title>
-            <link>https://s8508235.github.io/posts/limit-program-resource</link>
-            <guid>limit-program-resource</guid>
-            <pubDate>Thu, 19 Nov 2020 16:00:00 GMT</pubDate>
-            <description><![CDATA[cgroups 是 control groups，為 linux 核心的一個功能]]></description>
-            <content:encoded><![CDATA[
-來限制 memory 來簡單示範一下 cgroups
-
-### Disclaimer
-我不知道這是不是正確的作法，因為從 docker 得到了 cgroups 相關知識，用來這邊，那麼進入正文
-
----
-### Installation
-```
-apt install cgroup-tools
-```
-
-or
-``` 
-yum install libcgroup
+<img alt="TinyLFU with Main Cache" loading="lazy" src="/blog/cache-policy-pics/tinylfu-2.png"></p>
+<p>Finally, for sparse bursts, the paper suggest a LRU as window cache.
+<img alt="W-TinyLFU" loading="lazy" src="/blog/cache-policy-pics/w-tinylfu.png"></p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Cache_(computing)">Cache(wikipedia)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cache_replacement_policies">Cache replacement policies</a></li>
+<li><a href="https://github.com/ben-manes/caffeine/wiki/Efficiency">Caffeine wiki</a></li>
+<li><a href="https://dl.acm.org/doi/10.1145/3149371">Window TinyLFU paper</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Limit Program Resource</title>
+      <link>http://localhost:1313/blog/posts/limit-program-resource/</link>
+      <pubDate>Thu, 19 Nov 2020 22:52:32 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/limit-program-resource/</guid>
+      <description>cgroups 是 control groups，為 linux 核心的一個功能</description>
+      <content:encoded><![CDATA[<p>來限制 memory 來簡單示範一下 cgroups</p>
+<h3 id="disclaimer">Disclaimer</h3>
+<p>我不知道這是不是正確的作法，因為從 docker 得到了 cgroups 相關知識，用來這邊，那麼進入正文</p>
+<hr>
+<h3 id="installation">Installation</h3>
+<pre tabindex="0"><code>apt install cgroup-tools
+</code></pre><p>or</p>
+<pre tabindex="0"><code>yum install libcgroup
 yum install libcgroup-tools
-```
-### 建立 cgroup
-
-```cgcreate  -g subsystems:path``` <del>詳情請洽 red hat 官網</del>
-
-關於 subsystem 也可以去 `/sys/fs/cgroup` 下面看內建的
-
-也會看到其他教學是直接在 `/sys/fs/cgroup/` 下直接加資料夾，也會自動幫你加完相關檔案
-
-```
-sudo cgcreate -g memory:/mem_test
-```
-
-### 增加限制
-
-可以看到在新增 cgroup 後，可以發現 `/sys/fs/cgroup/memory/memory_test` 下面多了一些檔案
-
-這邊主要看 `memory.limit_in_bytes` 和 `memory.usage_in_bytes` 就好，
-
-用 
-```
-cat /sys/fs/cgroup/memory/memory_test/memory.limit_in_bytes
-``` 
-或 
-```
-cgget -g memory:mem_test | grep memory.limit_in_bytes
-``` 
-來查看設定，接著是用 
-```
-cgset -r memory.limit_in_bytes=100G mem_test
-``` 
-<del>為什麼這邊不一樣啊! <small>如果沒有變的話就加上 sudo </small></del>
-
-### 執行程式
-
-`cgexec -g memory:/mem_test command [argument]`
-
-例如:
-```
-cgexec -g memory:/mem_test ping 8.8.8.8
-```
-
-### 觀察
-
-可以使用以下指令來看在這個 cgroup 執行的 process
-```
-systemd-cgls memory:/mem_test
-``` 
-
-看在 cgroup 使用的 memory <del>應該有更好的方法，歡迎提供</del>
-
-```
-watch -n 1 "cgget -g memory:mem_test | grep memory.usage_in_bytes"
-``` 
-
-
-### 刪除 cgroup
-
-```
-sudo cgdelete memory:/mem_test
-```
-
-### Conclusion
-
-這樣就完成簡單的限制資源，還有其他 subsystem ( cpu, blkio, devices 等等) 可以實作，也可以互相組合，雖然是被大量應用在各種容器技術中，但也是可以簡單拿出來用用看。<del>大概吧</del>
-
-### Reference
-- [Red hat Resource management Chapter 2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/resource_management_guide/ch-using_control_groups)]]></content:encoded>
-        </item>
-    </channel>
+</code></pre><h3 id="建立-cgroup">建立 cgroup</h3>
+<p><code>cgcreate  -g subsystems:path</code> <del>詳情請洽 red hat 官網</del></p>
+<p>關於 subsystem 也可以去 <code>/sys/fs/cgroup</code> 下面看內建的</p>
+<p>也會看到其他教學是直接在 <code>/sys/fs/cgroup/</code> 下直接加資料夾，也會自動幫你加完相關檔案</p>
+<pre tabindex="0"><code>sudo cgcreate -g memory:/mem_test
+</code></pre><h3 id="增加限制">增加限制</h3>
+<p>可以看到在新增 cgroup 後，可以發現 <code>/sys/fs/cgroup/memory/memory_test</code> 下面多了一些檔案</p>
+<p>這邊主要看 <code>memory.limit_in_bytes</code> 和 <code>memory.usage_in_bytes</code> 就好，</p>
+<p>用</p>
+<pre tabindex="0"><code>cat /sys/fs/cgroup/memory/memory_test/memory.limit_in_bytes
+</code></pre><p>或</p>
+<pre tabindex="0"><code>cgget -g memory:mem_test | grep memory.limit_in_bytes
+</code></pre><p>來查看設定，接著是用</p>
+<pre tabindex="0"><code>cgset -r memory.limit_in_bytes=100G mem_test
+</code></pre><p><del>為什麼這邊不一樣啊! 如果沒有變的話就加上 sudo</del></p>
+<h3 id="執行程式">執行程式</h3>
+<p><code>cgexec -g memory:/mem_test command [argument]</code></p>
+<p>例如:</p>
+<pre tabindex="0"><code>cgexec -g memory:/mem_test ping 8.8.8.8
+</code></pre><h3 id="觀察">觀察</h3>
+<p>可以使用以下指令來看在這個 cgroup 執行的 process</p>
+<pre tabindex="0"><code>systemd-cgls memory:/mem_test
+</code></pre><p>看在 cgroup 使用的 memory <del>應該有更好的方法，歡迎提供</del></p>
+<pre tabindex="0"><code>watch -n 1 &#34;cgget -g memory:mem_test | grep memory.usage_in_bytes&#34;
+</code></pre><h3 id="刪除-cgroup">刪除 cgroup</h3>
+<pre tabindex="0"><code>sudo cgdelete memory:/mem_test
+</code></pre><h3 id="conclusion">Conclusion</h3>
+<p>這樣就完成簡單的限制資源，還有其他 subsystem ( cpu, blkio, devices 等等) 可以實作，也可以互相組合，雖然是被大量應用在各種容器技術中，但也是可以簡單拿出來用用看。<del>大概吧</del></p>
+<h3 id="reference">Reference</h3>
+<ul>
+<li><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/resource_management_guide/ch-using_control_groups">Red hat Resource management Chapter 2</a></li>
+</ul>
+]]></content:encoded>
+    </item>
+  </channel>
 </rss>

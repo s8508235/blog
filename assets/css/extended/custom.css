@@ -1,0 +1,14 @@
+body {
+    font-family: lato, Zen Old Mincho, Consolas, monaco, monospace, sans-serif, 'Times New Roman', Times, serif;
+    line-height: 2;
+    font-size: 20px;
+    --theme: #f0f0f0;
+    --primary: #303030;
+    --content: #1b1b1b;
+}
+
+body.dark {
+    --theme: #303030;
+    --primary: #f0f0f0;
+    --content: #e1e1e1;
+}

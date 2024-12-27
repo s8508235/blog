@@ -1,3 +1,1 @@
-<h1 align="center">
-  Clone from <a href="https://github.com/JoseRFelix/nextjs-starter-blog">Here</a>
-</h1>
+- https://saeedesmaili.com/posts/migrating-from-gatsby-to-hugo/
