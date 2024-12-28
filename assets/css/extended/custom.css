@@ -12,3 +12,14 @@ body.dark {
     --primary: #f0f0f0;
     --content: #e1e1e1;
 }
+
+.feedback {
+    position: absolute;
+    right: 1rem;
+}
+
+@media (max-width: 520px) {
+    .feedback {
+        position: relative;
+    }
+}
