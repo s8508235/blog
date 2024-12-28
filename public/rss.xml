@@ -6,8 +6,43 @@
     <description>Recent content on Minimal blog</description>
     <generator>Hugo -- 0.140.1</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 29 Jun 2023 18:57:11 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 28 Dec 2024 17:59:27 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Git 基礎之上</title>
+      <link>http://localhost:1313/blog/posts/git-%E5%9F%BA%E7%A4%8E%E4%B9%8B%E4%B8%8A/</link>
+      <pubDate>Sat, 28 Dec 2024 17:59:27 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/git-%E5%9F%BA%E7%A4%8E%E4%B9%8B%E4%B8%8A/</guid>
+      <description>介紹一些進階的 git command 用法</description>
+      <content:encoded><![CDATA[<p>在 <a href="https://4zm.org/2024/12/18/git-beyond-the-basics.html">Git - Beyond the Basics</a> 一文中介紹了十個 git command，這邊挑自己覺得有趣的來紀錄一下。</p>
+<h2 id="git-log">git log</h2>
+<p>可以用 git log 來找一個指定 file 裡面 function 的改動(顯示 log 和 diff)。<del>但好像不能找 python class 裡面的 function</del></p>
+<pre tabindex="0"><code>git log -L :setup:cmd/leetcode-picker/main.go
+</code></pre><p>可以用 <code>-S</code> 來找特定 string 的新增和刪除。</p>
+<pre tabindex="0"><code>git log -S tree
+</code></pre><h2 id="git-blame">git blame</h2>
+<p>第一次知道 blame 也有 ignore 可以設定。</p>
+<pre tabindex="0"><code>git config blame.ignoreRevsFile .git-blame-ignore-revs
+</code></pre><h2 id="git-branch">git branch</h2>
+<p>git branch 預設是按字母順序，可以改成日期，非常方便。</p>
+<pre tabindex="0"><code>git config --global branch.sort -committerdate
+</code></pre><h2 id="git-maintenance">git maintenance</h2>
+<p>第一次知道的 command，根據<a href="https://git-scm.com/docs/git-maintenance#_description">官方描述</a>，</p>
+<blockquote>
+<p>Git commands that add repository data, such as git add or git fetch, are optimized for a responsive user experience. These commands do not take time to optimize the Git data, since such optimizations scale with the full size of the repository while these user commands each perform a relatively small action.</p>
+</blockquote>
+<p><code>git add</code> 和 <code>git fetch</code> 為了響應式的使用者體驗，並沒有花時間最佳化 Git data，因為這些最佳化會隨著整個 repository 的規模而擴展，而同時這些使用者的命令每次執行的動作相對較小。</p>
+<p>這個 command 會執行各種 tasks 來最佳化 Git data，<del>由於都不熟就不介紹了</del>，其中有和 <a href="https://git-scm.com/docs/git-gc">git gc</a>一樣，會清理不必要的文件並最佳化 local repository 的task gc 。</p>
+<h2 id="git-rerere">git rerere</h2>
+<p>省時間幫手，要是再次遇到完全相同的 merge conflict 時，Git 能夠學會如何解決它並繼續進行。</p>
+<pre tabindex="0"><code>git config --global rerere.enabled true
+</code></pre><h2 id="git-worktrees">git worktrees</h2>
+<p>可以不用再很麻煩的把 branch 切來切去了，直接把 branch 放去別的資料夾，省掉一些 file 搬來搬去的功夫。</p>
+<pre tabindex="0"><code>git worktree add -b new-branch ../new-repo-dir
+</code></pre><h2 id="結語">結語</h2>
+<p><del>這不是大部分都不知道嗎</del></p>
+]]></content:encoded>
+    </item>
     <item>
       <title>Hyper V Wireguard</title>
       <link>http://localhost:1313/blog/posts/hyper-v-wireguard/</link>
