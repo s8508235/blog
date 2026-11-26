@@ -6,13 +6,11 @@ on:
       - main
   workflow_dispatch:
 
-# Minimal permissions required for GitHub Pages deployment.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Prevent multiple deployments from running simultaneously.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -28,7 +26,6 @@ jobs:
     env:
       HUGO_VERSION: 0.170.1
       HUGO_ENVIRONMENT: production
-      HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
       TZ: Asia/Taipei
 
     steps:
@@ -48,22 +45,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Cache Hugo resources
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/hugo_cache
-          key: hugo-${{ runner.os }}-${{ env.HUGO_VERSION }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
-          restore-keys: |
-            hugo-${{ runner.os }}-${{ env.HUGO_VERSION }}-
 
       - name: Install npm dependencies
         run: |
-          if [[ -f package-lock.json ]]; then
-            npm ci
-          elif [[ -f npm-shrinkwrap.json ]]; then
+          if [[ -f package-lock.json || -f npm-shrinkwrap.json ]]; then
             npm ci
           elif [[ -f yarn.lock ]]; then
             corepack enable
@@ -78,8 +63,6 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build site
-        env:
-          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
         run: |
           hugo \
             --gc \
