@@ -6,8 +6,36 @@
     <description>Recent content on Minimal blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 02 Sep 2026 20:26:28 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 26 Nov 2026 22:40:21 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Local LLM</title>
+      <link>http://localhost:1313/blog/posts/local-llm/</link>
+      <pubDate>Thu, 26 Nov 2026 22:40:21 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/local-llm/</guid>
+      <description>How to build llama.cpp on Windows</description>
+      <content:encoded><![CDATA[<p>I use this with <a href="https://github.com/s8508235/metyr">Metyr</a> to help me read foreign languages articles.
+My PC is Windows 10.</p>
+<h1 id="install-cuda">Install CUDA</h1>
+<p><a href="https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html">https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html</a></p>
+<h1 id="install-openssl">Install Openssl</h1>
+<p><a href="https://slproweb.com/products/Win32OpenSSL.html">https://slproweb.com/products/Win32OpenSSL.html</a></p>
+<h1 id="build-llamacpp-from-source">Build llama.cpp from source</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git clone https<span style="color:#960050;background-color:#1e0010">:</span>//github.com/ggml-org/llama.cpp
+</span></span><span style="display:flex;"><span>cd llama.cpp
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://developer.nvidia.com/cuda/gpus</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 86 (Compute Capability 8.6): RTX 3050 - 3090 Ti, RTX A2000 - A6000</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 89 (Compute Capability 8.9): RTX 4050 - 4090</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 120 (Compute Capability 12.0): RTX 5050 - 5090</span>
+</span></span><span style="display:flex;"><span>cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=<span style="color:#ae81ff">86</span>
+</span></span><span style="display:flex;"><span>cmake -S . -B build -DGGML_CUDA=ON -DLLAMA_OPENSSL=ON -DOPENSSL_ROOT_DIR=<span style="color:#e6db74">&#34;C:/Program Files/OpenSSL-Win64&#34;</span>
+</span></span></code></pre></div><h2 id="download-model">Download model</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>hf download unsloth/Hy-MT2-7B-GGUF Hy-MT2-7B-Q5_K_M.gguf --local-dir models\
+</span></span></code></pre></div><h2 id="run">run</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#75715e"># for 8G VRAM machine, it runs 5x t/s.</span>
+</span></span><span style="display:flex;"><span>build\bin\Release\llama-server.exe --model models\Hy-MT2-7B-Q5_K_M.gguf --temperature <span style="color:#ae81ff">0.7</span> --flash-attn on -c <span style="color:#ae81ff">8192</span> -n <span style="color:#ae81ff">4096</span> -ngl <span style="color:#ae81ff">99</span> --top-k <span style="color:#ae81ff">20</span> --top-p <span style="color:#ae81ff">0.9</span> --min-p <span style="color:#ae81ff">0.1</span> --parallel <span style="color:#ae81ff">1</span> -ctk q8_0 -ctv q8_0
+</span></span></code></pre></div>]]></content:encoded>
+    </item>
     <item>
       <title>Refresh Computer Networking BGP</title>
       <link>http://localhost:1313/blog/posts/refresh-computer-networking-bgp/</link>
