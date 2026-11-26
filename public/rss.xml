@@ -4,10 +4,147 @@
     <title>Minimal blog</title>
     <link>http://localhost:1313/blog/</link>
     <description>Recent content on Minimal blog</description>
-    <generator>Hugo -- 0.140.1</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Dec 2024 17:59:27 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2026 20:26:28 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Refresh Computer Networking BGP</title>
+      <link>http://localhost:1313/blog/posts/refresh-computer-networking-bgp/</link>
+      <pubDate>Wed, 02 Sep 2026 20:26:28 +0800</pubDate>
+      <guid>http://localhost:1313/blog/posts/refresh-computer-networking-bgp/</guid>
+      <description>&lt;p&gt;VXLAN的提出很好地解决了上述问题：
+针对虚拟机规模受网络规格限制&lt;/p&gt;
+&lt;p&gt;VXLAN将虚拟机发出的数据包封装在UDP中，并使用物理网络的IP、MAC地址作为外层头进行封装，对网络只表现为封装后的参数。因此，极大降低了大二层网络对MAC地址规格的需求。&lt;/p&gt;
+&lt;p&gt;针对网络隔离能力限制&lt;/p&gt;
+&lt;p&gt;VXLAN引入了类似VLAN ID的用户标识，称为VXLAN网络标识VNI（VXLAN Network Identifier），由24比特组成，支持多达16M（Million）的VXLAN段，从而满足了大量的用户标识。&lt;/p&gt;
+&lt;p&gt;针对虚拟机迁移范围受网络架构限制&lt;/p&gt;
+&lt;p&gt;VXLAN通过采用MAC in UDP封装来延伸二层网络，将以太报文封装在IP报文之上，通过路由在网络中传输，无需关注虚拟机的MAC地址。且路由网络无网络结构限制，具备大规模扩展能力、故障自愈能力、负载均衡能力。通过路由网络，虚拟机迁移不受网络架构限制。&lt;/p&gt;
+&lt;p&gt;EVPN（Ethernet Virtual Private Network）是一种用于二层网络互联的VPN技术。EVPN技术采用类似于BGP/MPLS IP VPN的机制，在BGP协议的基础上定义了一种新的NLRI（Network Layer Reachability Information，网络层可达信息）即EVPN NLRI，EVPN NLRI定义了几种新的BGP EVPN路由类型，用于处在二层网络的不同站点之间的MAC地址学习和发布。&lt;/p&gt;
+&lt;p&gt;原有的VXLAN实现方案没有控制平面，VXLAN引入了EVPN作为控制平面，通过在VTEP之间交换BGP EVPN路由实现VTEP的自动发现、主机信息相互通告等特性，从而避免了不必要的数据流量泛洪。&lt;/p&gt;
+&lt;p&gt;EVPN通过扩展BGP协议新定义了几种BGP EVPN路由，这些BGP EVPN路由可以用于传递VTEP地址和主机信息，因此EVPN应用于VXLAN网络中，可以使VTEP发现和主机信息学习从数据平面转移到控制平面。&lt;/p&gt;
+&lt;p&gt;MPLS（多重通訊協定標籤交換，Multi-Protocol Label Switching）&lt;/p&gt;
+&lt;p&gt;ARP类型路由携带的有效信息有：主机MAC地址+主机IP地址+二层VNI；IRB类型路由携带的有效信息有：主机MAC地址+主机IP地址+二层VNI+三层VNI。因此，IRB类型路由包含着ARP类型路由，不仅可以用于主机IP路由通告，也能用于主机ARP通告。&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;路由類型&lt;/th&gt;
+					&lt;th&gt;說明&lt;/th&gt;
+					&lt;th&gt;用途&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;類型 1 (RT-1)&lt;/td&gt;
+					&lt;td&gt;乙太網路自動探索 (A-D) 路由&lt;/td&gt;
+					&lt;td&gt;用於資料中心中，以支援 EVPN 作用中/作用中多宿主。&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;類型 2 (RT-2)&lt;/td&gt;
+					&lt;td&gt;MAC/IP 通告路由&lt;/td&gt;
+					&lt;td&gt;通告特定 MAC 位址的連線性，以及選擇性通告 MAC 和 IP 位址繫結。&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;類型 3 (RT-3)&lt;/td&gt;
+					&lt;td&gt;包含多點傳播乙太網路標籤路由&lt;/td&gt;
+					&lt;td&gt;通告虛擬網路中與特定 VTEP 相關聯之 VNI 的連線性。 需要類型 3 路由，才能在 EVPN 網路之間傳遞 BUM 流量。&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;類型 4 (RT-4)&lt;/td&gt;
+					&lt;td&gt;乙太網路區段路由&lt;/td&gt;
+					&lt;td&gt;用於具有多宿主端點的資料中心中，用來選取指定的轉寄站，以確保只有其中一個 VTEP 會轉送 BUM 流量。&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;類型 5 (RT-5)&lt;/td&gt;
+					&lt;td&gt;IP 首碼路由&lt;/td&gt;
+					&lt;td&gt;通告 IPv4 和 IPv6 首碼連線性。在 EVPN 網域中通告首碼，以便能夠建置類似 L3VPN 的服務。&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;類型 6 (RT-6)&lt;/td&gt;
+					&lt;td&gt;選擇性多點傳播乙太網路標籤路由&lt;/td&gt;
+					&lt;td&gt;用來通告主機或虛擬機器接收特定多點傳播群組 (*,G) 或來源群組組合 (S,G) 的多點傳播流量意向。&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1 id=&#34;reading-list&#34;&gt;Reading List&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Computer Networking: A Top-Down Approach&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=_Z29ZzKeZHc&#34;&gt;https://www.youtube.com/watch?v=_Z29ZzKeZHc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=O6tCoD5c_U0&#34;&gt;https://www.youtube.com/watch?v=O6tCoD5c_U0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=z8INzy9E628&#34;&gt;https://www.youtube.com/watch?v=z8INzy9E628&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://just4coding.com/2020/04/26/vxlan-evpn/&#34;&gt;https://just4coding.com/2020/04/26/vxlan-evpn/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://support.huawei.com/enterprise/zh/doc/EDOC1100277365/d9a0e6dc&#34;&gt;https://support.huawei.com/enterprise/zh/doc/EDOC1100277365/d9a0e6dc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://techdocs.broadcom.com/tw/zh-tw/vmware-cis/nsx/vmware-nsx/4-1/administration-guide/ethernet-vpn-evpn/overview-of-bgp-evpn.html&#34;&gt;https://techdocs.broadcom.com/tw/zh-tw/vmware-cis/nsx/vmware-nsx/4-1/administration-guide/ethernet-vpn-evpn/overview-of-bgp-evpn.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://juejin.cn/post/7513360441637404726&#34;&gt;https://juejin.cn/post/7513360441637404726&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=SVo6cDnQQm0&#34;&gt;https://www.youtube.com/watch?v=SVo6cDnQQm0&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+      <content:encoded><![CDATA[<p>VXLAN的提出很好地解决了上述问题：
+针对虚拟机规模受网络规格限制</p>
+<p>VXLAN将虚拟机发出的数据包封装在UDP中，并使用物理网络的IP、MAC地址作为外层头进行封装，对网络只表现为封装后的参数。因此，极大降低了大二层网络对MAC地址规格的需求。</p>
+<p>针对网络隔离能力限制</p>
+<p>VXLAN引入了类似VLAN ID的用户标识，称为VXLAN网络标识VNI（VXLAN Network Identifier），由24比特组成，支持多达16M（Million）的VXLAN段，从而满足了大量的用户标识。</p>
+<p>针对虚拟机迁移范围受网络架构限制</p>
+<p>VXLAN通过采用MAC in UDP封装来延伸二层网络，将以太报文封装在IP报文之上，通过路由在网络中传输，无需关注虚拟机的MAC地址。且路由网络无网络结构限制，具备大规模扩展能力、故障自愈能力、负载均衡能力。通过路由网络，虚拟机迁移不受网络架构限制。</p>
+<p>EVPN（Ethernet Virtual Private Network）是一种用于二层网络互联的VPN技术。EVPN技术采用类似于BGP/MPLS IP VPN的机制，在BGP协议的基础上定义了一种新的NLRI（Network Layer Reachability Information，网络层可达信息）即EVPN NLRI，EVPN NLRI定义了几种新的BGP EVPN路由类型，用于处在二层网络的不同站点之间的MAC地址学习和发布。</p>
+<p>原有的VXLAN实现方案没有控制平面，VXLAN引入了EVPN作为控制平面，通过在VTEP之间交换BGP EVPN路由实现VTEP的自动发现、主机信息相互通告等特性，从而避免了不必要的数据流量泛洪。</p>
+<p>EVPN通过扩展BGP协议新定义了几种BGP EVPN路由，这些BGP EVPN路由可以用于传递VTEP地址和主机信息，因此EVPN应用于VXLAN网络中，可以使VTEP发现和主机信息学习从数据平面转移到控制平面。</p>
+<p>MPLS（多重通訊協定標籤交換，Multi-Protocol Label Switching）</p>
+<p>ARP类型路由携带的有效信息有：主机MAC地址+主机IP地址+二层VNI；IRB类型路由携带的有效信息有：主机MAC地址+主机IP地址+二层VNI+三层VNI。因此，IRB类型路由包含着ARP类型路由，不仅可以用于主机IP路由通告，也能用于主机ARP通告。</p>
+<table>
+	<thead>
+			<tr>
+					<th>路由類型</th>
+					<th>說明</th>
+					<th>用途</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>類型 1 (RT-1)</td>
+					<td>乙太網路自動探索 (A-D) 路由</td>
+					<td>用於資料中心中，以支援 EVPN 作用中/作用中多宿主。</td>
+			</tr>
+			<tr>
+					<td>類型 2 (RT-2)</td>
+					<td>MAC/IP 通告路由</td>
+					<td>通告特定 MAC 位址的連線性，以及選擇性通告 MAC 和 IP 位址繫結。</td>
+			</tr>
+			<tr>
+					<td>類型 3 (RT-3)</td>
+					<td>包含多點傳播乙太網路標籤路由</td>
+					<td>通告虛擬網路中與特定 VTEP 相關聯之 VNI 的連線性。 需要類型 3 路由，才能在 EVPN 網路之間傳遞 BUM 流量。</td>
+			</tr>
+			<tr>
+					<td>類型 4 (RT-4)</td>
+					<td>乙太網路區段路由</td>
+					<td>用於具有多宿主端點的資料中心中，用來選取指定的轉寄站，以確保只有其中一個 VTEP 會轉送 BUM 流量。</td>
+			</tr>
+			<tr>
+					<td>類型 5 (RT-5)</td>
+					<td>IP 首碼路由</td>
+					<td>通告 IPv4 和 IPv6 首碼連線性。在 EVPN 網域中通告首碼，以便能夠建置類似 L3VPN 的服務。</td>
+			</tr>
+			<tr>
+					<td>類型 6 (RT-6)</td>
+					<td>選擇性多點傳播乙太網路標籤路由</td>
+					<td>用來通告主機或虛擬機器接收特定多點傳播群組 (*,G) 或來源群組組合 (S,G) 的多點傳播流量意向。</td>
+			</tr>
+	</tbody>
+</table>
+<h1 id="reading-list">Reading List</h1>
+<ul>
+<li>Computer Networking: A Top-Down Approach</li>
+<li><a href="https://www.youtube.com/watch?v=_Z29ZzKeZHc">https://www.youtube.com/watch?v=_Z29ZzKeZHc</a></li>
+<li><a href="https://www.youtube.com/watch?v=O6tCoD5c_U0">https://www.youtube.com/watch?v=O6tCoD5c_U0</a></li>
+<li><a href="https://www.youtube.com/watch?v=z8INzy9E628">https://www.youtube.com/watch?v=z8INzy9E628</a></li>
+<li><a href="https://just4coding.com/2020/04/26/vxlan-evpn/">https://just4coding.com/2020/04/26/vxlan-evpn/</a></li>
+<li><a href="https://support.huawei.com/enterprise/zh/doc/EDOC1100277365/d9a0e6dc">https://support.huawei.com/enterprise/zh/doc/EDOC1100277365/d9a0e6dc</a></li>
+<li><a href="https://techdocs.broadcom.com/tw/zh-tw/vmware-cis/nsx/vmware-nsx/4-1/administration-guide/ethernet-vpn-evpn/overview-of-bgp-evpn.html">https://techdocs.broadcom.com/tw/zh-tw/vmware-cis/nsx/vmware-nsx/4-1/administration-guide/ethernet-vpn-evpn/overview-of-bgp-evpn.html</a></li>
+<li><a href="https://juejin.cn/post/7513360441637404726">https://juejin.cn/post/7513360441637404726</a></li>
+<li><a href="https://www.youtube.com/watch?v=SVo6cDnQQm0">https://www.youtube.com/watch?v=SVo6cDnQQm0</a></li>
+</ul>
+]]></content:encoded>
+    </item>
     <item>
       <title>Git 基礎之上</title>
       <link>http://localhost:1313/blog/posts/git-%E5%9F%BA%E7%A4%8E%E4%B9%8B%E4%B8%8A/</link>
@@ -60,11 +197,11 @@
 <p><a href="https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-switch-for-hyper-v-virtual-machines">並使用 external switch</a></p>
 <h2 id="step-2-安裝-wireguard">Step 2 安裝 wireguard</h2>
 <p>新增 user 等 linux 設定這邊跳過，需要的話請參考<a href="https://linux.vbird.org/linux_basic/centos7/0410accountmanager.php">鳥哥私房菜</a></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install wireguard
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install wireguard
 </span></span></code></pre></div><h2 id="step-3-設定-server">Step 3 設定 server</h2>
 <p><a href="https://www.wireguardconfig.com/">生成 wireguard config</a> (記得不要關掉，後面還會用到)</p>
 <p>加上 DNS 後(建議)將 server config 存成 <code>wg0.conf</code> 並使用</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wg-quick up ./wg0.conf
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>wg-quick up ./wg0.conf
 </span></span></code></pre></div><p>開啟 server (wg-quick 需要 sudo)。</p>
 <p>如網路沒通，需要在 <code>wg0.conf</code> 的<code>[Interface]</code>中加上</p>
 <pre tabindex="0"><code class="language-conf" data-lang="conf">PreUp = sysctl -w net.ipv4.ip_forward=1
@@ -81,7 +218,7 @@ PreUp = sysctl -w net.ipv6.conf.all.forwarding=1
 <h2 id="optional">Optional</h2>
 <p>因為通常家裡都是浮動 IP，所以需要 DDNS，</p>
 <p>這邊使用 <a href="https://www.duckdns.org/">DuckDNS</a>，記得先安裝 curl</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install curl
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install curl
 </span></span></code></pre></div><p>註冊完後可以有 5 個 DDNS 的名額，依照<a href="https://www.duckdns.org/install.jsp">linux cron 的步驟</a>設定，
 (DuckDNS 很貼心都有換成你自己的 token 和 domain)</p>
 <p>並可得到 <code>xxx.duckdns.org</code> 的 domain，將其輸入在 Endpoint 的地方即可( port 要留著)。</p>
@@ -104,19 +241,19 @@ PreUp = sysctl -w net.ipv6.conf.all.forwarding=1
 </code></pre><p>But I did not pass my authenticator.</p>
 <p>After some trying(use other language to reproduce what happened), I found that message used for generation was weird.(check the byte)</p>
 <p>Go:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> (
 </span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/hmac&#34;</span>
 </span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;crypto/sha256&#34;</span>
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b64</span> <span style="color:#e6db74">&#34;encoding/base64&#34;</span>
 </span></span><span style="display:flex;"><span>)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// https://go.dev/play/p/JaDyZh_wNqn
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hmacSha256</span>(<span style="color:#a6e22e">data</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">secret</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// https://go.dev/play/p/JaDyZh_wNqn</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hmacSha256</span>(<span style="color:#a6e22e">data</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">secret</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">hmac</span>.<span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">sha256</span>.<span style="color:#a6e22e">New</span>, []byte(<span style="color:#a6e22e">secret</span>))
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#a6e22e">data</span>))
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">b64</span>.<span style="color:#a6e22e">URLEncoding</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">Sum</span>(<span style="color:#66d9ef">nil</span>))
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Node:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">crypto</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;crypto&#39;</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">crypto</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;crypto&#39;</span>);
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">hmacSha256</span>(<span style="color:#a6e22e">message</span>, <span style="color:#a6e22e">secret</span>) {
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hmac</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">crypto</span>.<span style="color:#a6e22e">createHmac</span>(<span style="color:#e6db74">&#39;sha256&#39;</span>, <span style="color:#a6e22e">secret</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hmac</span>.<span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">message</span>);

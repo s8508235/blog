@@ -1,6 +1,6 @@
 ## New Post
 ```
-hugo new content posts/{post_name}
+hugo new content posts/{post_name}.md
 ```
 
 ## How to update theme
